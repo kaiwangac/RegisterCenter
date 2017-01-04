@@ -35,7 +35,7 @@ proguard/
 *.jar
 *.war
 *.ear
- 
+
 # ignore Maven generated target folders
 target
 
