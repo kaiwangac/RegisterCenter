@@ -5,7 +5,7 @@ import com.register.server.param.Param;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Set;
+import java.util.Map;
 
 /**
  * Created by kaiwang on 2017/1/4.
@@ -15,9 +15,9 @@ public class RegistryController {
     @Autowired
     private Registry registry;
 
-    @RequestMapping(value = "/registry/{value}", method = RequestMethod.GET)
-    public Set<String> get(@PathVariable("value") String value) {
-        return registry.getKeySet(value);
+    @RequestMapping(value = "/registry", method = RequestMethod.GET)
+    public Map<String, String> get() {
+        return registry.getMap();
     }
 
     @RequestMapping(value = "/registry", method = RequestMethod.POST)

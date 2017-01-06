@@ -1,5 +1,6 @@
 package com.register.client.status;
 
+import com.alibaba.fastjson.JSONObject;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
@@ -7,12 +8,10 @@ import com.register.client.data.ServiceInfo;
 import com.register.client.registrar.RegisterClient;
 
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
-
-import static com.register.client.constant.GlobalConstant.AT;
-import static com.register.client.constant.GlobalConstant.COLON;
 
 /**
  * Created by kaiwang on 2017/1/6.
@@ -26,7 +25,7 @@ public class ServiceStatus {
     public ServiceStatus(RegisterClient registerClient) {
         this.registerClient = registerClient;
         this.statusCache = CacheBuilder.newBuilder()
-                .expireAfterAccess(DURATION, TimeUnit.SECONDS)
+                .refreshAfterWrite(DURATION, TimeUnit.SECONDS)
                 .build(new CacheLoader<String, Set<ServiceInfo>>() {
                     @Override
                     public Set<ServiceInfo> load(String service) throws Exception {
@@ -36,14 +35,12 @@ public class ServiceStatus {
     }
 
     private Set<ServiceInfo> getServiceInfo(String service) {
-        Set<String> set = this.registerClient.getService(service);
+        Map<String, String> map = this.registerClient.getService();
         Set<ServiceInfo> serviceInfoSet = new HashSet<ServiceInfo>();
-        for (String s : set) {
-            ServiceInfo serviceInfo = new ServiceInfo();
-            serviceInfo.setServiceName(s.split(AT)[1]);
-            serviceInfo.setIpAddress(s.split(COLON)[0]);
-            serviceInfo.setPort(Integer.parseInt(s.split(AT)[0].split(COLON)[1]));
-            serviceInfoSet.add(serviceInfo);
+        for (String key : map.keySet()) {
+            if (key.contains(service)) {
+                serviceInfoSet.add(JSONObject.parseObject(map.get(key), ServiceInfo.class));
+            }
         }
         return serviceInfoSet;
     }

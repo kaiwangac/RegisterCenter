@@ -3,10 +3,7 @@ package com.register.server.container;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 
-import java.util.HashSet;
 import java.util.Map;
-import java.util.Set;
-import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -26,15 +23,8 @@ public class Registry {
 
     }
 
-    public Set<String> getKeySet(String value) {
-        ConcurrentMap<String, String> map = this.registryCache.asMap();
-        HashSet<String> set = new HashSet<String>();
-        for (Map.Entry<String, String> entry : map.entrySet()) {
-            if (value.equals(entry.getValue())) {
-                set.add(entry.getKey());
-            }
-        }
-        return set;
+    public Map<String, String> getMap() {
+        return this.registryCache.asMap();
     }
 
     public String get(String key) {

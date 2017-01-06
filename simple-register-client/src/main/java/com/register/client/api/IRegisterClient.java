@@ -1,6 +1,6 @@
 package com.register.client.api;
 
-import java.util.Set;
+import java.util.Map;
 
 /**
  * Created by kaiwang on 2017/1/6.
@@ -10,5 +10,5 @@ public interface IRegisterClient {
 
     void shutdown();
 
-    Set<String> getService(String serviceName);
+    Map<String, String> getService();
 }

@@ -1,5 +1,7 @@
 package com.register.client.data;
 
+import java.util.Map;
+
 /**
  * Created by kaiwang on 2017/1/4.
  */
@@ -7,6 +9,7 @@ public class ServiceInfo {
     private String serviceName;
     private String ipAddress;
     private int port;
+    private Map<String, String> metaData;
 
     public String getIpAddress() {
         return ipAddress;
@@ -30,5 +33,13 @@ public class ServiceInfo {
 
     public void setServiceName(String serviceName) {
         this.serviceName = serviceName;
+    }
+
+    public Map<String, String> getMetaData() {
+        return metaData;
+    }
+
+    public void setMetaData(Map<String, String> metaData) {
+        this.metaData = metaData;
     }
 }

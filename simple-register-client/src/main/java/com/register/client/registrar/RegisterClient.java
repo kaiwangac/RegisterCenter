@@ -1,5 +1,6 @@
 package com.register.client.registrar;
 
+import com.alibaba.fastjson.JSONObject;
 import com.register.client.api.IRegisterClient;
 import com.register.client.data.RegisterInfo;
 import com.register.client.data.ServiceInfo;
@@ -8,7 +9,6 @@ import org.springframework.web.client.RestTemplate;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Set;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
@@ -58,8 +58,8 @@ public class RegisterClient implements IRegisterClient {
     }
 
     @Override
-    public Set<String> getService(String serviceName) {
-        return this.restTemplate.getForObject(this.url + "/registry/{value}", Set.class, serviceName);
+    public Map<String, String> getService() {
+        return this.restTemplate.getForObject(this.url + "/registry", Map.class);
     }
 
 
@@ -68,7 +68,7 @@ public class RegisterClient implements IRegisterClient {
     }
 
     private void shutdown(ServiceInfo serviceInfo) {
-        this.restTemplate.delete(this.url + "/registry/{key}", serviceInfo.getIpAddress() + COLON + serviceInfo.getPort() + AT + serviceInfo.getServiceName());
+        this.restTemplate.delete(this.url + "/registry/{key}", getKey(serviceInfo));
     }
 
     private void sendHeartbeat(ServiceInfo serviceInfo) {
@@ -79,9 +79,17 @@ public class RegisterClient implements IRegisterClient {
 
     private Map<String, String> getEntity(ServiceInfo serviceInfo) {
         Map<String, String> entity = new HashMap<>();
-        entity.put(KEY, serviceInfo.getIpAddress() + COLON + serviceInfo.getPort() + AT + serviceInfo.getServiceName());
-        entity.put(VALUE, serviceInfo.getServiceName());
+        entity.put(KEY, getKey(serviceInfo));
+        entity.put(VALUE, getValue(serviceInfo));
         return entity;
+    }
+
+    private String getKey(ServiceInfo serviceInfo) {
+        return serviceInfo.getIpAddress() + COLON + serviceInfo.getPort() + AT + serviceInfo.getServiceName();
+    }
+
+    private String getValue(ServiceInfo serviceInfo) {
+        return JSONObject.toJSONString(serviceInfo);
     }
 
     private class Heartbeat implements Runnable {
