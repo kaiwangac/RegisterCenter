@@ -1,4 +1,4 @@
-package com.register.client;
+package com.register.client.data;
 
 /**
  * Created by kaiwang on 2017/1/4.
